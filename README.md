@@ -27,7 +27,7 @@ project) and noted below.
 | **proj1 · snek** | Snake game in C | unit tests + custom tests pass; **22/22** integration tests pass; **valgrind: 0 leaks, 0 errors** |
 | **proj2 · CS61Classify** | Neural-net digit classifier in RISC-V asm | **46/46** unit tests (Venus); **9/9** coverage tests, 100% line coverage; 3/3 real classifications byte-identical to reference |
 | **proj3 · CS61CPU** | 2-stage pipelined RISC-V CPU in Logisim | **documented partial** — official starter imported; needs the Logisim GUI (see `proj3-cpu/STATUS.md`) |
-| **proj4 · 61kaChow** | Matrix convolution, SIMD + OpenMP | correctness **7/7** vs NumPy reference (optimized == naive byte-for-byte); **~4.2× SIMD**, **~9.2× SIMD+OpenMP** speedup |
+| **proj4 · 61kaChow** | Matrix convolution, SIMD + OpenMP | correctness **7/7** vs NumPy reference (optimized == naive byte-for-byte); **~4.9× SIMD-only**, **~14× SIMD+OpenMP** speedup (best of 3, 16 threads; exact figure is load-dependent — see `proj4-kachow/results/speedup.txt`) |
 
 Real captured outputs live in each project's `results/` directory.
 
@@ -111,7 +111,11 @@ bash test.sh part_b                       # full datapath + pipelined
 - **proj4**: outputs compared against an independent NumPy convolution reference
   across 7 shapes (including non-multiple-of-8 kernels that exercise the SIMD
   tail path); the optimized output is byte-for-byte identical to the naive one.
-  Speedup measured by timing the same workload. See `proj4-kachow/results/`.
+  Speedup measured (best of 3) by timing the same workload — 4× (400×400 *
+  100×100) + 2× (500×500 * 150×150) — under the naive scalar build, the AVX2
+  build pinned to one thread, and the AVX2+OpenMP build on all 16 logical CPUs.
+  Absolute times/ratios vary with host load; the committed run measured ~4.9×
+  (SIMD-only) and ~14× (SIMD+OpenMP). See `proj4-kachow/results/`.
 - **proj3**: the Logisim harness (`tools/run_test.py`, headless via
   `logisim-evolution.jar`) is confirmed working; the circuits are not built (see
   `STATUS.md`).

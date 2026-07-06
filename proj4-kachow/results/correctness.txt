@@ -1,10 +1,13 @@
-case              dims                  naive==np   opt==np     opt==naive
-t0                2x2 * 2x2             True        True        True
-t1                4x4 * 2x2             True        True        True
-t2                5x3 * 4x2             True        True        True
-t3                5x4 * 4x3             True        True        True
-t4                20x20 * 7x9           True        True        True
-t5                33x41 * 16x8          True        True        True
-t6                100x100 * 30x30       True        True        True
+=== 61kaChow correctness — reproduced 2026-07-06T18:47:47Z, gcc 13, -mavx2 -mfma -fopenmp ===
+Each out.bin compared byte-for-byte against committed np_ref.bin (independent NumPy convolution reference).
+
+case   dims                   naive==np   opt==np     opt==naive 
+t0     2x2 * 2x2              True        True        True       
+t1     4x4 * 2x2              True        True        True       
+t2     5x3 * 4x2              True        True        True       
+t3     5x4 * 4x3              True        True        True       
+t4     20x20 * 7x9            True        True        True       
+t5     33x41 * 16x8           True        True        True       
+t6     100x100 * 30x30        True        True        True       
 
 ALL PASS

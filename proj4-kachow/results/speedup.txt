@@ -1,8 +1,9 @@
-Benchmark: 4x (400x400 * 100x100) + 2x (500x500 * 150x150)
+=== 61kaChow speedup — reproduced 2026-07-06T18:47:47Z, gcc 13, 16 logical CPUs (best of 3 runs) ===
+Benchmark workload: 4x (400x400 * 100x100) + 2x (500x500 * 150x150)  [tests/bench]
 
-naive (1 core, scalar):             19301.0 ms
-optimized (1 thread, AVX2):          4566.6 ms   speedup   4.23x
-optimized (all threads, AVX2+OMP):   2090.6 ms   speedup   9.23x
+naive (1 core, scalar):               13819.0 ms
+optimized (1 thread, AVX2):            2789.0 ms   speedup  4.95x
+optimized (16 threads, AVX2+OMP):       976.0 ms   speedup 14.16x
 
-SIMD-only speedup:            4.23x
-SIMD + OpenMP total speedup: 9.23x  (host reports 16 logical CPUs)
+SIMD-only speedup:            4.95x
+SIMD + OpenMP total speedup: 14.16x  (host reports 16 logical CPUs)
