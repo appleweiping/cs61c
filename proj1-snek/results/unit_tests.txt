@@ -1,4 +1,6 @@
-=== UNIT TESTS ===
+=== proj1 snek unit + custom tests — reproduced 2026-07-06T18:21:44Z on Linux 6.18.33.2-microsoft-standard-WSL2, gcc 13 ===
+
+$ make unit-tests && ./unit-tests
 Reminder: These tests are not comprehensive, and passing them does not guarantee that your implementation is working.
 
 Testing create_default_game (Task 1)...
@@ -31,7 +33,7 @@ All find_head (Task 6) tests passed!
 Testing initialize_snakes (Task 6)...
 All initialize_snakes (Task 6) tests passed!
 
-=== CUSTOM TESTS ===
+$ make custom-tests && ./custom-tests
 
 Testing custom...
 All custom tests passed!

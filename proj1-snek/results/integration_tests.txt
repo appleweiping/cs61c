@@ -1,65 +1,70 @@
+=== proj1 snek integration tests — reproduced 2026-07-06T18:21:44Z ===
+$ make run-integration-tests   (21 board diffs + nonexistent-input-file check = 22 total)
+
+gcc -c -o src/snake.o src/snake.c -Wall -Wno-unused-function -Wconversion -std=c99 -g
+gcc -c -o src/game.o src/game.c -Wall -Wno-unused-function -Wconversion -std=c99 -g
+gcc -o snake src/snake.o src/snake_utils.o src/game.o -Wall -Wno-unused-function -Wconversion -std=c99 -g 
 ./snake -i "tests/01-simple-in.snk" -o "tests/01-simple-out.snk"
 diff "tests/01-simple-ref.snk" "tests/01-simple-out.snk"
-Passed 01-simple
+Passed 01-simple(B
 ./snake -i "tests/02-direction-in.snk" -o "tests/02-direction-out.snk"
 diff "tests/02-direction-ref.snk" "tests/02-direction-out.snk"
-Passed 02-direction
+Passed 02-direction(B
 ./snake -i "tests/03-tail-in.snk" -o "tests/03-tail-out.snk"
 diff "tests/03-tail-ref.snk" "tests/03-tail-out.snk"
-Passed 03-tail
+Passed 03-tail(B
 ./snake -i "tests/04-food-in.snk" -o "tests/04-food-out.snk"
 diff "tests/04-food-ref.snk" "tests/04-food-out.snk"
-Passed 04-food
+Passed 04-food(B
 ./snake -i "tests/05-wall-in.snk" -o "tests/05-wall-out.snk"
 diff "tests/05-wall-ref.snk" "tests/05-wall-out.snk"
-Passed 05-wall
+Passed 05-wall(B
 ./snake -i "tests/06-small-in.snk" -o "tests/06-small-out.snk"
 diff "tests/06-small-ref.snk" "tests/06-small-out.snk"
-Passed 06-small
+Passed 06-small(B
 ./snake -i "tests/07-medium-in.snk" -o "tests/07-medium-out.snk"
 diff "tests/07-medium-ref.snk" "tests/07-medium-out.snk"
-Passed 07-medium
+Passed 07-medium(B
 ./snake -i "tests/08-multisnake-in.snk" -o "tests/08-multisnake-out.snk"
 diff "tests/08-multisnake-ref.snk" "tests/08-multisnake-out.snk"
-Passed 08-multisnake
+Passed 08-multisnake(B
 ./snake -i "tests/09-everything-in.snk" -o "tests/09-everything-out.snk"
 diff "tests/09-everything-ref.snk" "tests/09-everything-out.snk"
-Passed 09-everything
+Passed 09-everything(B
 ./snake -i "tests/10-filled-in.snk" -o "tests/10-filled-out.snk"
 diff "tests/10-filled-ref.snk" "tests/10-filled-out.snk"
-Passed 10-filled
+Passed 10-filled(B
 ./snake -i "tests/11-manyclose-in.snk" -o "tests/11-manyclose-out.snk"
 diff "tests/11-manyclose-ref.snk" "tests/11-manyclose-out.snk"
-Passed 11-manyclose
+Passed 11-manyclose(B
 ./snake -i "tests/12-corner-in.snk" -o "tests/12-corner-out.snk"
 diff "tests/12-corner-ref.snk" "tests/12-corner-out.snk"
-Passed 12-corner
+Passed 12-corner(B
 ./snake -i "tests/13-sus-in.snk" -o "tests/13-sus-out.snk"
 diff "tests/13-sus-ref.snk" "tests/13-sus-out.snk"
-Passed 13-sus
+Passed 13-sus(B
 ./snake -i "tests/14-orochi-in.snk" -o "tests/14-orochi-out.snk"
 diff "tests/14-orochi-ref.snk" "tests/14-orochi-out.snk"
-Passed 14-orochi
+Passed 14-orochi(B
 ./snake -i "tests/15-hydra-in.snk" -o "tests/15-hydra-out.snk"
 diff "tests/15-hydra-ref.snk" "tests/15-hydra-out.snk"
-Passed 15-hydra
+Passed 15-hydra(B
 ./snake -i "tests/16-huge-in.snk" -o "tests/16-huge-out.snk"
 diff -q "tests/16-huge-ref.snk" "tests/16-huge-out.snk"
-Passed 16-huge
+Passed 16-huge(B
 ./snake -i "tests/17-wide-in.snk" -o "tests/17-wide-out.snk"
 diff -q "tests/17-wide-ref.snk" "tests/17-wide-out.snk"
-Passed 17-wide
+Passed 17-wide(B
 ./snake -i "tests/18-tall-in.snk" -o "tests/18-tall-out.snk"
 diff -q "tests/18-tall-ref.snk" "tests/18-tall-out.snk"
-Passed 18-tall
+Passed 18-tall(B
 ./snake -i "tests/19-101-127-in.snk" -o "tests/19-101-127-out.snk"
 diff -q "tests/19-101-127-ref.snk" "tests/19-101-127-out.snk"
-Passed 19-101-127
+Passed 19-101-127(B
 ./snake -i "tests/20-long-line-in.snk" -o "tests/20-long-line-out.snk"
 diff -q "tests/20-long-line-ref.snk" "tests/20-long-line-out.snk"
-Passed 20-long-line
+Passed 20-long-line(B
 ./snake -i "tests/21-bigL-in.snk" -o "tests/21-bigL-out.snk"
 diff -q "tests/21-bigL-ref.snk" "tests/21-bigL-out.snk"
-Passed 21-bigL
-Passed 22-nonexistent-input-file
-EXIT:0
+Passed 21-bigL(B
+Passed 22-nonexistent-input-file(B
