@@ -1,3 +1,6 @@
+=== CS61Classify unit tests via Venus RISC-V simulator — reproduced 2026-07-06T18:33:13Z ===
+$ python unittests.py -v --    (openjdk version "21.0.7" 2025-04-15 LTS, venus.jar, --immutableText --maxsteps -1 --callingConvention)
+
 test_abs_minus_one (__main__.TestAbs.test_abs_minus_one) ... ok
 test_abs_one (__main__.TestAbs.test_abs_one) ... ok
 test_abs_zero (__main__.TestAbs.test_abs_zero) ... ok
@@ -46,6 +49,6 @@ test_write_fail_fopen (__main__.TestWriteMatrix.test_write_fail_fopen) ... ok
 test_write_fail_fwrite (__main__.TestWriteMatrix.test_write_fail_fwrite) ... ok
 
 ----------------------------------------------------------------------
-Ran 46 tests in 91.762s
+Ran 46 tests in 105.726s
 
 OK

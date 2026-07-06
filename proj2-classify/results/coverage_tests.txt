@@ -1,6 +1,18 @@
-.........
+=== CS61Classify coverage tests via Venus — reproduced 2026-07-06T18:35:27Z ===
+$ python studenttests.py -v --   (9 tests, reports per-file line coverage)
+
+test_bad_length (__main__.TestAbsLoss.test_bad_length) ... ok
+test_simple (__main__.TestAbsLoss.test_simple) ... ok
+test_bad_length (__main__.TestInitializeZero.test_bad_length) ... ok
+test_malloc_fail (__main__.TestInitializeZero.test_malloc_fail) ... ok
+test_simple (__main__.TestInitializeZero.test_simple) ... ok
+test_bad_length (__main__.TestSquaredLoss.test_bad_length) ... ok
+test_simple (__main__.TestSquaredLoss.test_simple) ... ok
+test_bad_length (__main__.TestZeroOneLoss.test_bad_length) ... ok
+test_simple (__main__.TestZeroOneLoss.test_simple) ... ok
+
 ----------------------------------------------------------------------
-Ran 9 tests in 6.936s
+Ran 9 tests in 14.743s
 
 OK
 

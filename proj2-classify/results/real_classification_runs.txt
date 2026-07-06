@@ -1,5 +1,6 @@
-=== CS61Classify real end-to-end classification runs (Venus RISC-V simulator) ===
-Each run: main.s classify <m0> <m1> <input> <output>, comparing output.bin to reference.bin
+=== CS61Classify real end-to-end classification runs (Venus RISC-V simulator) — reproduced 2026-07-06T18:36:14Z ===
+Each run: java -jar tools/venus.jar src/main.s --immutableText --maxsteps -1 -- <m0> <m1> <input> <output>
+Then: cmp output.bin against the provided reference.bin (byte-exact).
 
 classify-1: predicted digit class = 2 ; output byte-identical to reference (PASS)
 classify-2: predicted digit class = 2 ; output byte-identical to reference (PASS)
