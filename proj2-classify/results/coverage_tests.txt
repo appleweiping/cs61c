@@ -1,0 +1,13 @@
+.........
+----------------------------------------------------------------------
+Ran 9 tests in 6.936s
+
+OK
+
+Coverage for `abs_loss.s`: 24/24
+
+Coverage for `initialize_zero.s`: 23/23
+
+Coverage for `squared_loss.s`: 22/22
+
+Coverage for `zero_one_loss.s`: 22/22

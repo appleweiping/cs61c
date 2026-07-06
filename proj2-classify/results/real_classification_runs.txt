@@ -1,0 +1,6 @@
+=== CS61Classify real end-to-end classification runs (Venus RISC-V simulator) ===
+Each run: main.s classify <m0> <m1> <input> <output>, comparing output.bin to reference.bin
+
+classify-1: predicted digit class = 2 ; output byte-identical to reference (PASS)
+classify-2: predicted digit class = 2 ; output byte-identical to reference (PASS)
+classify-3: predicted digit class = 1 ; output byte-identical to reference (PASS)

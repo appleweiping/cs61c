@@ -38,32 +38,36 @@ class TestAbsLoss(unittest.TestCase):
         # load the test for abs_loss.s
         t = AssemblyTest(self, "../coverage-src/abs_loss.s")
 
-        raise NotImplementedError("TODO")
-
-        # create array0 in the data section
-        # TODO
-        # load address of `array0` into register a0
-        # TODO
-        # create array1 in the data section
-        # TODO
-        # load address of `array1` into register a1
-        # TODO
-        # set a2 to the length of the array
-        # TODO
-        # create a result array in the data section (fill values with -1)
-        # TODO
-        # load address of `array2` into register a3
-        # TODO
-        # call the `abs_loss` function
-        # TODO
-        # check that the result array contains the correct output
-        # TODO
-        # check that the register a0 contains the correct output
-        # TODO
-        # generate the `assembly/TestAbsLoss_test_simple.s` file and run it through venus
+        # arr0 and arr1 chosen so both sub1 (t5 > t6) and sub2 (t6 >= t5)
+        # branches are exercised.
+        array0 = t.array([1, 5, 3, 10])
+        t.input_array("a0", array0)
+        array1 = t.array([4, 2, 3, 1])
+        t.input_array("a1", array1)
+        # length of the arrays
+        t.input_scalar("a2", 4)
+        # result array (initialized with sentinel -1 values)
+        result = t.array([-1, -1, -1, -1])
+        t.input_array("a3", result)
+        # call abs_loss
+        t.call("abs_loss")
+        # |1-4| + |5-2| + |3-3| + |10-1| = 3 + 3 + 0 + 9 = 15
+        t.check_array(result, [3, 3, 0, 9])
+        t.check_scalar("a0", 15)
         t.execute()
 
-    # Add other test cases if necessary
+    def test_bad_length(self):
+        # exercise the exit_bad_len path (length < 1 -> exit code 36)
+        t = AssemblyTest(self, "../coverage-src/abs_loss.s")
+        array0 = t.array([1, 2, 3])
+        t.input_array("a0", array0)
+        array1 = t.array([1, 2, 3])
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 0)
+        result = t.array([-1, -1, -1])
+        t.input_array("a3", result)
+        t.call("abs_loss")
+        t.execute(code=36)
 
     @classmethod
     def tearDownClass(cls):
@@ -95,29 +99,30 @@ class TestSquaredLoss(unittest.TestCase):
         # load the test for squared_loss.s
         t = AssemblyTest(self, "../coverage-src/squared_loss.s")
 
-        raise NotImplementedError("TODO")
+        array0 = t.array([1, 5, 3, 10])
+        t.input_array("a0", array0)
+        array1 = t.array([4, 2, 3, 1])
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 4)
+        result = t.array([-1, -1, -1, -1])
+        t.input_array("a3", result)
+        t.call("squared_loss")
+        # (1-4)^2 + (5-2)^2 + (3-3)^2 + (10-1)^2 = 9 + 9 + 0 + 81 = 99
+        t.check_array(result, [9, 9, 0, 81])
+        t.check_scalar("a0", 99)
+        t.execute()
 
-        # TODO
-        # create input arrays in the data section
-        # TODO
-        # load array addresses into argument registers
-        # TODO
-        # load array length into argument register
-        # TODO
-        # create a result array in the data section (fill values with -1)
-        # TODO
-        # load result array address into argument register
-        # TODO
-        # call the `squared_loss` function
-        # TODO
-        # check that the result array contains the correct output
-        # TODO
-        # check that the register a0 contains the correct output
-        # TODO
-        # generate the `assembly/TestSquaredLoss_test_simple.s` file and run it through venus
-        # TODO
-
-    # Add other test cases if neccesary
+    def test_bad_length(self):
+        t = AssemblyTest(self, "../coverage-src/squared_loss.s")
+        array0 = t.array([1, 2, 3])
+        t.input_array("a0", array0)
+        array1 = t.array([1, 2, 3])
+        t.input_array("a1", array1)
+        t.input_scalar("a2", -1)
+        result = t.array([-1, -1, -1])
+        t.input_array("a3", result)
+        t.call("squared_loss")
+        t.execute(code=36)
 
     @classmethod
     def tearDownClass(cls):
@@ -149,26 +154,30 @@ class TestZeroOneLoss(unittest.TestCase):
         # load the test for zero_one_loss.s
         t = AssemblyTest(self, "../coverage-src/zero_one_loss.s")
 
-        raise NotImplementedError("TODO")
+        # Mix of equal (-> 1) and unequal (-> 0) elements to hit load1 and load0.
+        array0 = t.array([1, 2, 3, 4])
+        t.input_array("a0", array0)
+        array1 = t.array([1, 9, 3, 8])
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 4)
+        result = t.array([-1, -1, -1, -1])
+        t.input_array("a3", result)
+        t.call("zero_one_loss")
+        # result[i] = (arr0[i] == arr1[i]) -> [1, 0, 1, 0]
+        t.check_array(result, [1, 0, 1, 0])
+        t.execute()
 
-        # create input arrays in the data section
-        # TODO
-        # load array addresses into argument registers
-        # TODO
-        # load array length into argument register
-        # TODO
-        # create a result array in the data section (fill values with -1)
-        # TODO
-        # load result array address into argument register
-        # TODO
-        # call the `zero_one_loss` function
-        # TODO
-        # check that the result array contains the correct output
-        # TODO
-        # generate the `assembly/TestZeroOneLoss_test_simple.s` file and run it through venus
-        # TODO
-
-    # Add other test cases if neccesary
+    def test_bad_length(self):
+        t = AssemblyTest(self, "../coverage-src/zero_one_loss.s")
+        array0 = t.array([1, 2, 3])
+        t.input_array("a0", array0)
+        array1 = t.array([1, 2, 3])
+        t.input_array("a1", array1)
+        t.input_scalar("a2", 0)
+        result = t.array([-1, -1, -1])
+        t.input_array("a3", result)
+        t.call("zero_one_loss")
+        t.execute(code=36)
 
     @classmethod
     def tearDownClass(cls):
@@ -196,17 +205,25 @@ class TestInitializeZero(unittest.TestCase):
     def test_simple(self):
         t = AssemblyTest(self, "../coverage-src/initialize_zero.s")
 
-        raise NotImplementedError("TODO")
-
-        # input the length of the desired array
-        # TODO
-        # call the `initialize_zero` function
-        # TODO
-        # check that the register a0 contains the correct array (hint: look at the check_array_pointer function in framework.py)
-        # TODO
+        # allocate and zero-initialize an array of length 5
+        t.input_scalar("a0", 5)
+        t.call("initialize_zero")
+        # the returned pointer should reference an array of five zeros
+        t.check_array_pointer("a0", [0, 0, 0, 0, 0])
         t.execute()
 
-    # Add other test cases if neccesary
+    def test_bad_length(self):
+        t = AssemblyTest(self, "../coverage-src/initialize_zero.s")
+        t.input_scalar("a0", 0)
+        t.call("initialize_zero")
+        t.execute(code=36)
+
+    def test_malloc_fail(self):
+        t = AssemblyTest(self, "../coverage-src/initialize_zero.s")
+        t.input_scalar("a0", 4)
+        t.call("initialize_zero")
+        # force malloc to fail so the error_malloc path (exit 26) is covered
+        t.execute(fail="malloc", code=26)
 
     @classmethod
     def tearDownClass(cls):
