@@ -1,67 +1,80 @@
-# CS61CPU (proj3) — Status: documented partial
+# CS61CPU (proj3) — Status: ALU complete & verified; RegFile + full CPU are a documented partial
 
-This directory contains the **official CS61CPU starter** (from `61c-teach/sp26-proj3-starter`)
-imported unmodified, plus this status note. The CPU circuits themselves are **not
-implemented** here. This is an honest, documented partial per the build's quality bar
-("never pretend").
+This directory contains the **official CS61CPU starter** (from `61c-teach/sp26-proj3-starter`),
+plus a **fully implemented, headlessly-verified ALU** (`cpu/alu.circ`) built entirely by
+coordinate-free Logisim-Evolution XML authoring. The register file and the pipelined CPU
+datapath remain starter circuits — an honest, documented partial per the build's quality bar
+("never pretend"), now much smaller than before.
 
-## Why this is a partial
+## What is DONE and verified (real evidence in `results/alu_tests.txt`)
 
-CS61CPU is built entirely in **Logisim-Evolution** as `.circ` files. Logisim circuits are
-XML documents in which every component and every wire is placed at exact pixel coordinates,
-and connectivity depends on ports landing on precisely the right coordinates. The project is
-normally completed **interactively in the Logisim GUI**, which this headless build
-environment does not have.
+**`cpu/alu.circ` — the complete RISC-V ALU — passes all 6 unit tests headlessly (6/6):**
 
-I verified that the surrounding tooling works and that pure-XML authoring is *partially*
-feasible, but could not get it to a fully verified-passing state:
+```
+$ bash test.sh test_alu
+PASS: tests/unit-alu/alu-add.circ
+PASS: tests/unit-alu/alu-all.circ          <- comprehensive: exercises every ALUSel op
+PASS: tests/unit-alu/alu-logic.circ
+PASS: tests/unit-alu/alu-mult.circ
+PASS: tests/unit-alu/alu-shift.circ
+PASS: tests/unit-alu/alu-slt-sub-bsel.circ
+Passed 6/6 tests
+```
 
-- **The autograder harness runs headlessly and is fully usable.** `java -jar
-  tools/logisim-evolution.jar -t table cpu/alu.circ` dumps a circuit's truth table, and
-  `python tools/run_test.py tests/...` diffs a circuit's output against the reference. Both
-  were confirmed working here (the starter ALU correctly reports `UUUUUUUU` for the
-  unimplemented result).
-- **Pure-XML editing can connect staff-placed components.** I confirmed that wiring the
-  starter's staff-placed `Adder` output tunnel (`add0`) to `ALUResult` makes
-  `tests/unit-alu/alu-add.circ` **PASS** — so a tunnel-based ALU is connectable in principle.
-- **The blocker:** new components I place (especially the 16-input `Multiplexer` that selects
-  the active ALU operation, and the `Shifter`/`Multiplier`/`Comparator` blocks) require exact
-  port pixel-coordinates that Logisim-Evolution computes dynamically from component bounds,
-  facing, and select-width. Without the GUI (which snaps wires to ports and shows
-  connectivity), and after a wide empirical coordinate sweep (~100 candidate geometries dumped
-  via `-t table`), I could not reliably land tunnels on the mux data/select ports. Authoring
-  the full datapath (ALU + 32-register regfile + imm-gen + branch-comp + control-logic +
-  partial-load/store + a 2-stage pipelined `cpu.circ`) blind to component geometry is not
-  achievable to a verified standard here.
+Every one of the 13 ALU operations is implemented and correct, selected by the 4-bit `ALUSel`:
 
-## What *was* produced (real, reusable analysis)
+| ALUSel | Op   | how it is built | ALUSel | Op    | how it is built |
+|--------|------|-----------------|--------|-------|-----------------|
+| `0000` | add  | `Adder`         | `1000` | mul (low 32)  | `Multiplier` (32b) |
+| `0001` | sll  | `Shifter shift=ll` | `1001` | mulh (signed) | 64b `Multiplier` of sign-extended A,B → hi word |
+| `0010` | slt (signed) | `Comparator mode=twosComplement`, LT bit zero-extended | `1011` | mulhu (unsigned) | 64b `Multiplier` of zero-extended A,B → hi word |
+| `0100` | xor  | `XOR Gate`      | `1100` | sub   | `Subtractor` |
+| `0101` | srl  | `Shifter shift=lr` | `1101` | sra   | `Shifter shift=ar` |
+| `0110` | or   | `OR Gate`       | `1111` | bsel (= B) | tunnel alias |
+| `0111` | and  | `AND Gate`      |        |       | |
 
-The ALU operation spec was fully reverse-engineered from the reference test vectors in
-`tests/unit-alu/out/alu-all.ref`. `ALUSel` (4 bits) selects:
+The 13 operation results feed a **16:1 selection tree of 2:1 multiplexers** (4 levels,
+15 muxes) driven by the four bits of `ALUSel` (extracted with a `Splitter`). Sign/zero
+extension for the high-multiplies is built from `Splitter`s + a 2:1 mux that produces the
+32-bit sign word (`0xFFFFFFFF`/`0x0`) from bit 31. `alu-all.ref` was independently decoded
+to confirm this exact `ALUSel → operation` mapping before wiring.
 
-| ALUSel | Op    | ALUSel | Op            |
-|--------|-------|--------|---------------|
-| `0000` | add   | `1000` | mul (low 32)  |
-| `0001` | sll   | `1001` | mulh (signed) |
-| `0010` | slt (signed) | `1011` | mulhu (unsigned) |
-| `0100` | xor   | `1100` | sub           |
-| `0101` | srl   | `1101` | sra           |
-| `0110` | or    | `1111` | bsel (= B)    |
-| `0111` | and   |        |               |
+### How the ALU was authored without a GUI (the technique)
 
-This mapping was validated numerically against every distinct `ALUSel` row in the reference
-(e.g. `0x00007fff + 0x00000001 = 0x00008000` for add; `0xf234567f << 9 = 0x68acfe00` for sll;
-`mulhu(0xf435daa4, 0x72381add) = 0x6cf580c5`).
+Logisim-Evolution connects components where a net endpoint (wire / tunnel) lands **exactly**
+on a component port pixel. Tunnels connect purely by **label**, so if you know a component's
+port offsets relative to its `loc`, you can wire it blind. I recovered each component's port
+geometry empirically by generating tiny probe circuits and reading `java -jar logisim -t table`,
+then hard-coded the verified offsets. The verified offsets (component `loc` = `(x,y)`):
 
-## How to finish it (in a GUI environment)
+- **Adder / Subtractor / Multiplier (lib Arithmetic):** inputs `(-40,-10)` & `(-40,+10)`, output `(0,0)`.
+- **AND/OR gate (`size=30`):** inputs `(-30,-10)` & `(-30,+10)`, output `(0,0)`.
+- **XOR gate (`size=30`):** inputs `(-40,-10)` & `(-40,+10)`, output `(0,0)` (wider than AND/OR).
+- **Shifter:** data `(-40,-10)`, distance (5-bit) `(-40,+10)`, output `(0,0)`; codes `ll`/`lr`/`ar`.
+- **Comparator (`mode=twosComplement`):** A `(-40,-10)`, B `(-40,+10)`, signed-LT output `(0,+10)`.
+- **2:1 Multiplexer (`select=1`):** d0 `(-30,-10)`, d1 `(-30,+10)`, sel `(-20,+20)`, output `(0,0)`.
+- **Splitter (`facing=west`):** combined port at `loc`; group *k* at `(-20, +10 + 10·k)`
+  (bidirectional — same geometry splits a bus or combines groups back into one).
 
-1. `bash tools/download_tools.sh` — fetches `logisim-evolution.jar` and `venus.jar`.
-2. Open each `cpu/*.circ` in Logisim-Evolution and build the datapath per the ALU table above
-   and the RISC-V RV32 datapath.
-3. Verify: `bash test.sh part_a` (ALU, RegFile, addi) and `bash test.sh part_b`
-   (branch-comp, imm-gen, partial-load/store, integration + pipelined with `--pipelined`).
+## What remains (the documented partial)
 
-## Tools
+- **`cpu/regfile.circ`** — needs 32 `Register`s, a 5→32 write-enable decoder, `x0` hard-wired
+  to 0, and two 32:1 read multiplexers. This is large **sequential** logic (the harness steps
+  the clock), not attempted here to a verified standard.
+- **`cpu/cpu.circ` + the other datapath circuits** (control-logic, imm-gen, branch-comp,
+  partial-load/store) and the **2-stage pipelined** variant — the full processor. Not implemented.
 
-`logisim-evolution.jar` (14 MB) and `venus.jar` (11 MB) are **git-ignored**; download them with
+These are achievable with the same tunnel-authoring technique now that the geometry model is
+solved, but each is a substantial build (esp. the clocked regfile and the pipelined datapath);
+they are left for a GUI session.
+
+## How to reproduce / finish
+
+```bash
+bash test.sh test_alu     # ALU: 6/6 PASS (verified here)
+bash test.sh part_a       # ALU + RegFile + addi  (RegFile/addi still starter)
+bash test.sh part_b       # full datapath + pipelined (--pipelined)
+```
+
+`logisim-evolution.jar` (14 MB) and `venus.jar` are **git-ignored**; fetch with
 `bash tools/download_tools.sh`.

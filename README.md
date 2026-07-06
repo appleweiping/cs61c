@@ -26,7 +26,7 @@ project) and noted below.
 |---|---|---|
 | **proj1 · snek** | Snake game in C | unit tests + custom tests pass; **22/22** integration tests pass; **valgrind: 0 leaks, 0 errors** |
 | **proj2 · CS61Classify** | Neural-net digit classifier in RISC-V asm | **46/46** unit tests (Venus); **9/9** coverage tests, 100% line coverage; 3/3 real classifications byte-identical to reference |
-| **proj3 · CS61CPU** | 2-stage pipelined RISC-V CPU in Logisim | **documented partial** — official starter imported; needs the Logisim GUI (see `proj3-cpu/STATUS.md`) |
+| **proj3 · CS61CPU** | RISC-V CPU in Logisim-Evolution | **ALU complete: 6/6 unit tests PASS headlessly** (all 13 ops incl. mul/mulh/mulhu, verified via `logisim -tty`); RegFile + full pipelined datapath are a documented partial (see `proj3-cpu/STATUS.md`, evidence in `proj3-cpu/results/`) |
 | **proj4 · 61kaChow** | Matrix convolution, SIMD + OpenMP | correctness **7/7** vs NumPy reference (optimized == naive byte-for-byte); **~4.9× SIMD-only**, **~14× SIMD+OpenMP** speedup (best of 3, 16 threads; exact figure is load-dependent — see `proj4-kachow/results/speedup.txt`) |
 
 Real captured outputs live in each project's `results/` directory.
@@ -43,10 +43,12 @@ Real captured outputs live in each project's `results/` directory.
   `dot`, `matmul`, `read_matrix`, `write_matrix`, and the top-level `classify`
   (read m0/m1/input → `matmul` → `relu` → `matmul` → write → `argmax`), plus the
   four coverage tests.
-- [~] **proj3 — CS61CPU** (`proj3-cpu/`): official Logisim-Evolution starter,
-  imported. See `proj3-cpu/STATUS.md` for the honest partial write-up (including
-  the fully reverse-engineered `ALUSel` → operation table) and how to finish it
-  in the GUI.
+- [~] **proj3 — CS61CPU** (`proj3-cpu/`): the **ALU is fully implemented and
+  passes all 6 unit tests headlessly** (`cpu/alu.circ` — add/sll/slt/xor/srl/or/
+  and/mul/mulh/mulhu/sub/sra/bsel, built from Logisim components wired entirely by
+  coordinate-free tunnels; evidence in `proj3-cpu/results/alu_tests.txt`). The
+  register file and the pipelined CPU datapath remain the official starter — a
+  documented partial. See `proj3-cpu/STATUS.md`.
 - [x] **proj4 — 61kaChow** (`proj4-kachow/`): 2-D matrix convolution. A scalar
   `compute_naive.c` reference and an `compute_optimized.c` using **AVX2** 8-wide
   int32 intrinsics + **OpenMP**, plus the MPI compute variant.
@@ -116,9 +118,12 @@ bash test.sh part_b                       # full datapath + pipelined
   build pinned to one thread, and the AVX2+OpenMP build on all 16 logical CPUs.
   Absolute times/ratios vary with host load; the committed run measured ~4.9×
   (SIMD-only) and ~14× (SIMD+OpenMP). See `proj4-kachow/results/`.
-- **proj3**: the Logisim harness (`tools/run_test.py`, headless via
-  `logisim-evolution.jar`) is confirmed working; the circuits are not built (see
-  `STATUS.md`).
+- **proj3**: the ALU (`cpu/alu.circ`) is verified with the course's own harness —
+  `bash test.sh test_alu` runs each test circuit through `logisim-evolution.jar
+  -tty table,binary,csv` and diffs against the staff reference: **6/6 PASS**,
+  including `alu-all` (every ALUSel op) and `alu-mult` (mul/mulh/mulhu). Captured
+  in `proj3-cpu/results/alu_tests.txt`. RegFile and the full pipelined CPU are an
+  honest partial (`STATUS.md`).
 
 ## Tech stack
 
