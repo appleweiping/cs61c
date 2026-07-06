@@ -1,0 +1,33 @@
+# Build outputs
+*.o
+*.obj
+*.exe
+*.out
+*.app
+
+# Project executables
+proj1-snek/snake
+proj1-snek/interactive-snake
+proj1-snek/unit-tests
+proj1-snek/custom-tests
+proj1-snek/tests/*-out.snk
+proj1-snek/unit-test-*.snk
+
+# Tools / large binaries (download at runtime)
+*.jar
+proj2-classify/tools/venus.jar
+proj2-classify/tools/logisim-evolution.jar
+proj3-cpu/tools/*.jar
+
+# Venus auto-generated test assembly + outputs
+proj2-classify/test-src/
+proj2-classify/**/output.bin
+proj2-classify/**/*-output.bin
+
+# Python
+__pycache__/
+*.py[cod]
+
+# OS
+.DS_Store
+Thumbs.db
