@@ -97,37 +97,91 @@ bool test_is_vowel() {
 /* Task 4.1 */
 
 bool test_is_tail() {
-  // TODO: Implement this function.
+  // Tail characters are "wasd".
+  if (!assert_true("is_tail('w')", is_tail('w'))) return false;
+  if (!assert_true("is_tail('a')", is_tail('a'))) return false;
+  if (!assert_true("is_tail('s')", is_tail('s'))) return false;
+  if (!assert_true("is_tail('d')", is_tail('d'))) return false;
+  // Non-tail characters.
+  if (!assert_false("is_tail('W')", is_tail('W'))) return false;
+  if (!assert_false("is_tail('^')", is_tail('^'))) return false;
+  if (!assert_false("is_tail('x')", is_tail('x'))) return false;
+  if (!assert_false("is_tail(' ')", is_tail(' '))) return false;
+  if (!assert_false("is_tail('#')", is_tail('#'))) return false;
   return true;
 }
 
 bool test_is_head() {
-  // TODO: Implement this function.
+  // Head characters are "WASDx".
+  if (!assert_true("is_head('W')", is_head('W'))) return false;
+  if (!assert_true("is_head('A')", is_head('A'))) return false;
+  if (!assert_true("is_head('S')", is_head('S'))) return false;
+  if (!assert_true("is_head('D')", is_head('D'))) return false;
+  if (!assert_true("is_head('x')", is_head('x'))) return false;
+  // Non-head characters.
+  if (!assert_false("is_head('w')", is_head('w'))) return false;
+  if (!assert_false("is_head('>')", is_head('>'))) return false;
+  if (!assert_false("is_head(' ')", is_head(' '))) return false;
+  if (!assert_false("is_head('#')", is_head('#'))) return false;
   return true;
 }
 
 bool test_is_snake() {
-  // TODO: Implement this function.
+  // Snake characters are "wasd^<v>WASDx".
+  char *snake_chars = "wasd^<v>WASDx";
+  for (int i = 0; snake_chars[i] != '\0'; i++) {
+    if (!assert_true("is_snake(snake char)", is_snake(snake_chars[i]))) return false;
+  }
+  // Non-snake characters.
+  if (!assert_false("is_snake(' ')", is_snake(' '))) return false;
+  if (!assert_false("is_snake('#')", is_snake('#'))) return false;
+  if (!assert_false("is_snake('*')", is_snake('*'))) return false;
   return true;
 }
 
 bool test_body_to_tail() {
-  // TODO: Implement this function.
+  if (!assert_equals_char("body_to_tail('^')", 'w', body_to_tail('^'))) return false;
+  if (!assert_equals_char("body_to_tail('<')", 'a', body_to_tail('<'))) return false;
+  if (!assert_equals_char("body_to_tail('v')", 's', body_to_tail('v'))) return false;
+  if (!assert_equals_char("body_to_tail('>')", 'd', body_to_tail('>'))) return false;
   return true;
 }
 
 bool test_head_to_body() {
-  // TODO: Implement this function.
+  if (!assert_equals_char("head_to_body('W')", '^', head_to_body('W'))) return false;
+  if (!assert_equals_char("head_to_body('A')", '<', head_to_body('A'))) return false;
+  if (!assert_equals_char("head_to_body('S')", 'v', head_to_body('S'))) return false;
+  if (!assert_equals_char("head_to_body('D')", '>', head_to_body('D'))) return false;
   return true;
 }
 
 bool test_get_next_row() {
-  // TODO: Implement this function.
+  // Down movers increment the row.
+  if (!assert_equals_unsigned_int("get_next_row down 'v'", 6, get_next_row(5, 'v'))) return false;
+  if (!assert_equals_unsigned_int("get_next_row down 's'", 6, get_next_row(5, 's'))) return false;
+  if (!assert_equals_unsigned_int("get_next_row down 'S'", 6, get_next_row(5, 'S'))) return false;
+  // Up movers decrement the row.
+  if (!assert_equals_unsigned_int("get_next_row up '^'", 4, get_next_row(5, '^'))) return false;
+  if (!assert_equals_unsigned_int("get_next_row up 'w'", 4, get_next_row(5, 'w'))) return false;
+  if (!assert_equals_unsigned_int("get_next_row up 'W'", 4, get_next_row(5, 'W'))) return false;
+  // Horizontal / other characters leave the row unchanged.
+  if (!assert_equals_unsigned_int("get_next_row '>'", 5, get_next_row(5, '>'))) return false;
+  if (!assert_equals_unsigned_int("get_next_row 'a'", 5, get_next_row(5, 'a'))) return false;
   return true;
 }
 
 bool test_get_next_col() {
-  // TODO: Implement this function.
+  // Right movers increment the column.
+  if (!assert_equals_unsigned_int("get_next_col right '>'", 6, get_next_col(5, '>'))) return false;
+  if (!assert_equals_unsigned_int("get_next_col right 'd'", 6, get_next_col(5, 'd'))) return false;
+  if (!assert_equals_unsigned_int("get_next_col right 'D'", 6, get_next_col(5, 'D'))) return false;
+  // Left movers decrement the column.
+  if (!assert_equals_unsigned_int("get_next_col left '<'", 4, get_next_col(5, '<'))) return false;
+  if (!assert_equals_unsigned_int("get_next_col left 'a'", 4, get_next_col(5, 'a'))) return false;
+  if (!assert_equals_unsigned_int("get_next_col left 'A'", 4, get_next_col(5, 'A'))) return false;
+  // Vertical / other characters leave the column unchanged.
+  if (!assert_equals_unsigned_int("get_next_col 'v'", 5, get_next_col(5, 'v'))) return false;
+  if (!assert_equals_unsigned_int("get_next_col 'w'", 5, get_next_col(5, 'w'))) return false;
   return true;
 }
 

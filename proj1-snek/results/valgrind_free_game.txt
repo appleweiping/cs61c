@@ -1,0 +1,20 @@
+valgrind --leak-check=full --track-origins=yes ./unit-tests -m
+==7058== Memcheck, a memory error detector
+==7058== Copyright (C) 2002-2022, and GNU GPL'd, by Julian Seward et al.
+==7058== Using Valgrind-3.22.0 and LibVEX; rerun with -h for copyright info
+==7058== Command: ./unit-tests -m
+==7058== 
+Reminder: These tests are not comprehensive, and passing them does not guarantee that your implementation is working.
+
+Testing free_game...
+This test case only checks for leaks in Tasks 1 and 2. Make sure that no Valgrind errors are printed!
+==7058== 
+==7058== HEAP SUMMARY:
+==7058==     in use at exit: 0 bytes in 0 blocks
+==7058==   total heap usage: 22 allocs, 22 frees, 4,688 bytes allocated
+==7058== 
+==7058== All heap blocks were freed -- no leaks are possible
+==7058== 
+==7058== For lists of detected and suppressed errors, rerun with: -s
+==7058== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+EXIT:0
